@@ -1,0 +1,42 @@
+{:paths ["src" "resources"]
+
+ :mvn/repos {"acn-snapshots" {:url "https://repo.deps.co/aircraft-noise/snapshots"}
+             "acn-releases"  {:url "https://repo.deps.co/aircraft-noise/releases"}}
+
+ :deps {org.clojure/clojure              {:mvn/version "1.11.1"}
+        medley/medley                    {:mvn/version "1.4.0"}
+        org.jmdns/jmdns                  {:mvn/version "3.5.7"}
+        org.apache.commons/commons-lang3 {:mvn/version "3.12.0"}}
+
+ :aliases
+ {:mvn/artifact-id mdns
+  :mvn/group-id    com.dcj
+  :mvn/version     "0.0.1-SNAPSHOT"
+  :jar/file-name   "mdns.jar"
+
+  :jar {:replace-deps
+        {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+        :exec-fn hf.depstar/jar
+        :exec-args {:jar         :jar/file-name
+                    :artifact-id :mvn/artifact-id
+                    :group-id    :mvn/group-id
+                    :version     :mvn/version
+                    :sync-pom    true}}
+
+  :deploy {:extra-deps {com.dcj/deps-deploy
+                        {:git/url "https://github.com/dcj/deps-deploy.git"
+                         :sha "cf0f5e612eab04789c757a98f544eb8dea61a45b"}}
+           ;; :sha "49f1da003208d615d52c06164401e6fb3d9ba853"}}
+           :exec-fn deps-deploy.deps-deploy/deploy
+           :exec-args {:installer :remote
+                       :sign-releases? false
+                       :artifact :jar/file-name
+                       :repository "acn-snapshots"}}
+
+  :dev {:extra-paths ["dev"]}
+
+  }}
+
+
+
+
